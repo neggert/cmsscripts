@@ -48,6 +48,30 @@ def get_weights( dataset_regex, lumi, xsec, other_filter="") :
     parent_nevents = get_number_events( parent )
     print "Weight:", lumi*xsec/parent_nevents
 
+def get_eff_xsec( dataset, xsec):
+    """Get the effective cross section for a single event (in pb)"""
+    query = build_dataset_query(dataset, "")
+    datasets = das_query(query)
+    if len(datasets) > 1 :
+        # Make the user choose which dataset they're referring to
+        print "Multiple datasets match input"
+        for i, d in enumerate(datasets) :
+            if len(d['dataset']) > 1 : 
+                raise RuntimeError( "What's going on ?")
+            print str(i)+") "+d['dataset'][0]['name']
+        print "Choosing dataset 0"
+        dataset_choice = 0
+    else :
+        dataset_choice = 0
+    dataset_name = datasets[dataset_choice]['dataset'][0]['name']
+    print "Dataset "+dataset_name
+    parent = get_parent( dataset_name )
+    print "Parent "+parent
+    parent_nevents = get_number_events( parent )
+    x_eff = xsec/parent_nevents
+    print "xsec_eff:", x_eff
+    return x_eff
+
 
 if __name__ == '__main__':
     # command line options

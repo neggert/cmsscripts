@@ -1,4 +1,5 @@
 import das
+import json
 
 instance="cms_dbs_ph_analysis_01"
 
@@ -37,9 +38,9 @@ def get_files_from_dataset( dataset_name ) :
     results = []
     for result in das_results :
         if type(result['file']) == type([]) :
-            results.append(result['file'][0]['name'])
+            results.append(result['file'][0]['name'].encode('ascii', 'replace'))
         elif type(result['file']) == type({}) :
-            results.append(result['file']['name'])
+            results.append(result['file']['name'].encode('ascii', 'replace'))
     return results
 
 def das_query( query ) :
@@ -48,4 +49,4 @@ def das_query( query ) :
     page = 0
     limit = 0
     result = das.get_data(host, query, page, limit, False) #set last argument to True for debug
-    return eval(result.replace('true', 'True'))['data'] # get_data returns a string that we need to eval
+    return json.loads(result)['data'] # get_data returns a string that we need to eval
