@@ -17,7 +17,13 @@ def get_number_events( dataset_name ) :
         for d in data :
             print data
         which_data = int(raw_input("Which dataset?"))
-    return float(data[which_data]['dataset'][0]['nevents'])
+    # find the one that actually has the dataset info
+    for item in data[which_data]['dataset']:
+        try:
+            nevents = item['nevents']
+        except KeyError:
+            continue
+    return float(nevents)
 
 def get_parent( dataset_name ) :
     """Query DAS to get the parent dataset"""
